@@ -96,7 +96,12 @@ def is_bounding_box_intersect(bounding_box, polygon):
 		if is_point_in_polygon(polygon, bounding_box[i]):
 			return True
 	return False
-
+def count_point_in_polygon(bounding_box, polygon):
+	point = 0
+	for i in range(len(bounding_box)):
+		if is_point_in_polygon(polygon, bounding_box[i]):
+			point +=1
+	return point
 # def main():
 # 	polygon1 = ((0, 0), (10, 0), (10, 10), (0, 10)) 
 # 	p = (20, 20)

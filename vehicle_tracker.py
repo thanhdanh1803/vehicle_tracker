@@ -18,7 +18,7 @@ list_of_things = ['person','bus', 'truck','car']
                 #type 2: car
                 #type 3: bus
                 #type 4: truck
-demo_video = os.path.join(config.DATA_PATH, 'sample_01.mp4')
+demo_video = os.path.join(config.DATA_PATH, 'sample_02.mp4')
 print(demo_video)
 lablesPath = os.path.join(config.MODEl_PATH, 'coco.names')
 LABELS = open(lablesPath).read().strip().split('\n')
@@ -127,18 +127,20 @@ while True:
             index = key_list[val_list.index(class_name)]
             tracked_bboxes.append(bbox.tolist() + [tracking_id, index])
             #print temp result
-            tracker_list = track_dict[tracking_id]
-            if(len(tracker_list) > 1):
-                first = tracker_list[0]
-                last = tracker_list[-1]
-                first_point = ((first[2] - first[0])/2, (first[3] - first[1])/2)
-                last_point = ((last[2] - last[0])/2, (last[3] - last[1])/2)
-                vehicle_type = get_vehicle_type(last[4])
-                last_frame = last[5]
-                object_moi_detections = counting_moi(paths, [[first_point, last_point, last_frame, vehicle_type]])
-                print(object_moi_detections)
+            # tracker_list = track_dict[tracking_id]
+            # if(len(tracker_list) > 3):
+            #     first = tracker_list[0]
+            #     last = tracker_list[-1]
+            #     last_box = (last[0], last[1], last[2], last[3])
+            #     if check_bbox_in_polygon(polygon, last_box) == False:
+            #         first_point = ((first[2] - first[0])/2, (first[3] - first[1])/2)
+            #         last_point = ((last[2] - last[0])/2, (last[3] - last[1])/2)
+            #         vehicle_type = get_vehicle_type(last[4])
+            #         last_frame = last[5]
+            #         object_moi_detections = counting_moi(paths, [[first_point, last_point, last_frame, vehicle_type]])
+            #         print(object_moi_detections)
     
-                frame = vehicle_detector.draw_bbox(frame, tracked_bboxes, labels= LABELS, tracking=True)
+            frame = vehicle_detector.draw_bbox(frame, tracked_bboxes, labels= LABELS, tracking=True)
     if 1 > 0:
         cv2.imshow('Frame', frame)
         key = cv2.waitKey(1) & 0xFF
@@ -152,11 +154,13 @@ for tracker_id, tracker_list in track_dict.items():
     if(len(tracker_list) > 1):
         first = tracker_list[0]
         last = tracker_list[-1]
+        last_box = (last[0], last[1], last[2], last[3])
         first_point = ((first[2] - first[0])/2, (first[3] - first[1])/2)
-        last_point = ((last[2] - last[0])/2, (last[3] - last[1])/2)
-        vehicle_type = get_vehicle_type(last[4])
-        last_frame = last[5]
-        object_vector_list.append([first_point, last_point, last_frame, vehicle_type])
+        if check_bbox_in_polygon(polygon, last_box) == False: #confirm the tracker not miss the object in polygon
+            last_point = ((last[2] - last[0])/2, (last[3] - last[1])/2)
+            vehicle_type = get_vehicle_type(last[4])
+            last_frame = last[5]
+            object_vector_list.append([first_point, last_point, last_frame, vehicle_type])
 
 object_moi_detections = counting_moi(paths, object_vector_list)
 print(object_moi_detections)

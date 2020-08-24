@@ -29,10 +29,18 @@ def check_bbox_intersect_polygon(polygon, bbox):
     bb = [(x1, y1), (x2, y1), (x2, y2), (x1, y2)]
     return bb_polygon.is_bounding_box_intersect(bb, polygon)
 
+def check_bbox_in_polygon(polygon, bbox):
+    x1, y1, x2, y2 = bbox
+    bb = [(x1, y1), (x2, y1), (x2, y2), (x1, y2)]
+    point_in_poly = bb_polygon.count_point_in_polygon(bb, polygon)
+    #print(point_in_poly)
+    if point_in_poly > 2:
+        return True
+    return False
 
 def cosin_similarity(a2d, b2d):
-    a = np.array((a2d[1][0] - a2d[0][0], a2d[1][1 ]- a2d[0][1]))
-    b = np.array((b2d[1][0] - b2d[0][1], b2d[1][1] - b2d[1][0]))
+    a = np.array((a2d[1][0] - a2d[0][0], a2d[1][1]- a2d[0][1]))#(-258, 361)
+    b = np.array((b2d[1][0] - b2d[0][0], b2d[1][1] - b2d[0][1])) #(-2.3, -4.6)
     return np.dot(a, b)/(np.linalg.norm(a)*np.linalg.norm(b))
 
 
